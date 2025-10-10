@@ -1,0 +1,19 @@
+# Ramble Daemon Configuration
+
+# Your display name in Ramble chat
+username = "your-username"
+
+# Ramble server URL
+server_url = "https://ramble.chat"
+
+# Local HTTP server port for web app communication
+local_port = 9001
+
+# Log level: trace, debug, info, warn, error
+log_level = "info"
+
+# Delay between reconnection attempts (seconds)
+reconnect_delay = 5
+
+# Notification display timeout (seconds)
+notification_timeout = 5
