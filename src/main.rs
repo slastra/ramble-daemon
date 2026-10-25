@@ -74,6 +74,7 @@ async fn main() -> Result<()> {
     let sse_client = SseClient::new(
         config.server_url.clone(),
         config.username.clone(),
+        config.token.clone(),
         config.reconnect_delay,
         state.clone(),
     );
@@ -185,7 +186,7 @@ async fn setup_config() -> Result<()> {
     Config::create_example(&config_path)?;
 
     println!("✓ Created example config at: {}", config_path.display());
-    println!("\nPlease edit this file and set your username and server URL.");
+    println!("\nPlease edit this file and set your username, server URL, and token.");
     println!("Then run 'ramble-daemon' to start the daemon.");
 
     Ok(())

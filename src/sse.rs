@@ -12,16 +12,18 @@ use tokio::time::sleep;
 pub struct SseClient {
     server_url: String,
     username: String,
+    token: String,
     reconnect_delay: Duration,
     state: AppState,
 }
 
 impl SseClient {
     /// Create a new SSE client
-    pub fn new(server_url: String, username: String, reconnect_delay: u64, state: AppState) -> Self {
+    pub fn new(server_url: String, username: String, token: String, reconnect_delay: u64, state: AppState) -> Self {
         Self {
             server_url,
             username,
+            token,
             reconnect_delay: Duration::from_secs(reconnect_delay),
             state,
         }
@@ -64,6 +66,7 @@ impl SseClient {
         let client = reqwest::Client::new();
         let response = client
             .get(url)
+            .bearer_auth(&self.token)
             .send()
             .await
             .context("Failed to connect to SSE endpoint")?;

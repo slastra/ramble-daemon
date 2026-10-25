@@ -35,6 +35,7 @@ Create `~/.config/ramble/config.toml`:
 ```toml
 username = "your-username"
 server_url = "https://ramble.chat"
+token = "the-server-EVENTS_TOKEN"  # must match EVENTS_TOKEN on the Ramble server
 local_port = 9001
 log_level = "info"
 reconnect_delay = 5

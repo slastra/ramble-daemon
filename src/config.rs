@@ -14,6 +14,9 @@ pub struct Config {
     /// Ramble server URL (e.g., "https://ramble.chat")
     pub server_url: String,
 
+    /// Shared secret for the server's event stream (its EVENTS_TOKEN)
+    pub token: String,
+
     /// Local HTTP server port
     #[serde(default = "default_local_port")]
     pub local_port: u16,
@@ -101,6 +104,10 @@ impl Config {
             anyhow::bail!("server_url must start with http:// or https://");
         }
 
+        if self.token.is_empty() {
+            anyhow::bail!("token cannot be empty");
+        }
+
         Ok(())
     }
 
@@ -109,6 +116,7 @@ impl Config {
         let example = Config {
             username: "your-username".to_string(),
             server_url: "https://ramble.chat".to_string(),
+            token: "the-server-EVENTS_TOKEN".to_string(),
             local_port: default_local_port(),
             log_level: default_log_level(),
             reconnect_delay: default_reconnect_delay(),
