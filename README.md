@@ -1,51 +1,29 @@
-# Ramble Daemon
+# ramble-daemon
 
-Native Linux desktop notifications for [Ramble](https://ramble.chat) - an ephemeral, RAM-based chat application.
+Native Linux desktop notification daemon for Ramble.
 
-## What It Does
+ramble-daemon shows desktop notifications for [Ramble](https://github.com/slastra/ramble) chat messages while you're away from the web app.
 
-Ramble Daemon provides desktop notifications for chat messages while you're away from the web app. It intelligently suppresses notifications when you're actively using Ramble, so you only get notified when needed.
+## Install
 
-## Installation
-
-### Prerequisites
+### Requirements
 
 - Linux with D-Bus notification support (dunst, mako, notification-daemon, etc.)
-- Rust 1.70+ for building from source
+- A Rust toolchain for building from source
 
-### Build and Install
+### From source
 
 ```bash
-git clone https://github.com/yourusername/ramble-daemon.git
+git clone https://github.com/slastra/ramble-daemon.git
 cd ramble-daemon
 cargo build --release
 cp target/release/ramble-daemon ~/.local/bin/
 ```
 
-Or use the install script:
+Or use the install script, which builds, copies the binary to `/usr/local/bin` (or `~/.local/bin` when that isn't writable) and writes an example config:
 
 ```bash
 ./install.sh
-```
-
-## Configuration
-
-Create `~/.config/ramble/config.toml`:
-
-```toml
-username = "your-username"
-server_url = "https://ramble.chat"
-token = "the-server-EVENTS_TOKEN"  # must match EVENTS_TOKEN on the Ramble server
-local_port = 9001
-log_level = "info"
-reconnect_delay = 5
-notification_timeout = 5
-```
-
-Or run the setup wizard:
-
-```bash
-ramble-daemon setup
 ```
 
 ## Usage
@@ -54,9 +32,11 @@ Start the daemon:
 
 ```bash
 ramble-daemon
+ramble-daemon --config path/to/config.toml   # default: ~/.config/ramble/config.toml
+ramble-daemon setup                          # write an example config file
 ```
 
-### Auto-Start with Systemd
+### Auto-start with systemd
 
 Create `~/.config/systemd/user/ramble-daemon.service`:
 
@@ -81,14 +61,30 @@ Enable and start:
 systemctl --user enable --now ramble-daemon
 ```
 
-## How It Works
+## Configuration
 
-The daemon connects to the Ramble server via Server-Sent Events (SSE) to receive real-time messages. The web app communicates its activity status to the daemon via HTTP on localhost. Notifications only appear when the web app is inactive and the message is from someone else.
+Create `~/.config/ramble/config.toml`:
 
-## License
+```toml
+username = "your-username"
+server_url = "https://ramble.chat"
+token = "the-server-EVENTS_TOKEN"  # must match EVENTS_TOKEN on the Ramble server
+local_port = 9001
+log_level = "info"
+reconnect_delay = 5
+notification_timeout = 5
+```
 
-MIT
+`username`, `server_url` and `token` are required; the rest default to the values shown. `ramble-daemon setup` writes this file for you to edit.
+
+## How it works
+
+The daemon connects to the Ramble server via Server-Sent Events (SSE) to receive real-time messages, and notifies for every message from someone else. The web app communicates its activity status to the daemon via HTTP on localhost (`/active`, `/inactive`, `/heartbeat`, and `/status` to read it back); the daemon tracks that status but does not yet use it to suppress notifications.
 
 ## Contributing
 
 Contributions are welcome. Please open an issue or pull request.
+
+## License
+
+MIT © 2025 Ramble Contributors. See [LICENSE](LICENSE).
